@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Sender & Verify</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d; /* خلفية سوداء */
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .wrapper {
+      display: flex;
+      gap: 40px;
+    }
+
+    .container {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 223, 0, 0.8);
+      width: 350px;
+    }
+
+    .container h2 {
+      text-align: center;
+      color: #ffcc00;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: block;
+      color: #ffcc00;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      background: #262626;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 120px;
+      resize: none;
+    }
+
+    .btn {
+      background: #ffcc00;
+      color: #0d0d0d;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #e6b800;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- صندوق الإيميل الحالي -->
+    <div class="container">
+      <h2>📧 Send Email</h2>
+      <form action="/send-email" method="POST">
+        <label for="to">To</label>
+        <input type="email" id="to" name="to" placeholder="Enter recipient email" required>
+
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="Enter subject" required>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Write your message..." required></textarea>
+
+        <button type="submit" class="btn">Send</button>
+      </form>
+    </div>
+
+    <!-- صندوق التحقق من الايميل -->
+    <div class="container">
+      <h2>🔍 Verify Email</h2>
+      <form action="/verify-email" method="POST">
+        <label for="verify-email">Enter Email</label>
+        <input type="email" id="verify-email" name="verify-email" placeholder="Enter your email" required>
+
+        <button type="submit" class="btn">Verify</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "user": {
+    "name": "Ali",
+    "password": "$2b$10$ZT4Upcyu0j6mVgFDSLt/IurA7.8H9tUyiJU9HqQATZ7oJCsD3nx12",
+    "role": "instructor",
+    "email": "ali@example.com",
+    "courseId": [],
+    "_id": "68a8707fa3d843b2b7321c8c",
+    "__v": 0
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGE4NzA3ZmEzZDg0M2IyYjczMjFjOGMiLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImNvdXJzZUlkIjpbXSwiaWF0IjoxNzU1ODY5MzExLCJleHAiOjE3NTY0NzQxMTF9.OyZfx_4MtZOuPmEQvu4_jlnBBlQI6VtsGpon2q9LCkI"
+},
+{"message":"Login successful","data":{"id":"68a868a72cf5056e54b5c428","name":"Ali","email":"ali@example.com","courseId":[]},"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0cnVjdG9ySWQiOiI2OGE4NjhhNzJjZjUwNTZlNTRiNWM0MjgiLCJjb3Vyc2VJZCI6W10sImlhdCI6MTc1NTg2OTM2NiwiZXhwIjoxNzU2NDc0MTY2fQ.7qNE7XzVaYFsAxbZShpgjl14PBjjaJiA9jrsk_lCyXc"}
+
+
+
+{"title":"Intro to JavaScript","price":9.99,"duration":"10 hours","description":"A short intro to JS","_id":"68a874dee8cb5ac1fc8d2a73","__v":0}
+
+
+
+
+
+الكاتيجوري مفروض الادمن بس هو الي يضيفها فمفروض ليها توكن واوسورايزيشن برضو 
+
+وكذالك بالنسبه لليست بتاعت كورسات الطالب والليسته بتاعت كورسات الانستراكتور 
+
+وبرضو اني اخلي الطالب يشتري الكورس
+
++Emailverify
