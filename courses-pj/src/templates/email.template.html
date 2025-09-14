@@ -1,53 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Sender & Verify</title>
+  <title>تفعيل الحساب - رمز التحقق OTP</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0d0d0d; /* خلفية سوداء */
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      line-height: 1.6;
     }
 
-    .wrapper {
-      display: flex;
-      gap: 40px;
-    }
-
-    .container {
-      background: #1a1a1a;
-      padding: 30px;
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255, 223, 0, 0.8);
-      width: 350px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
     }
 
-    .container h2 {
+    .header {
+      background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+      padding: 30px 20px;
       text-align: center;
-      color: #ffcc00;
-      margin-bottom: 25px;
     }
 
-    label {
-      font-size: 14px;
-      margin-bottom: 8px;
-      display: block;
-      color: #ffcc00;
+    .header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    input, textarea {
-      width: 100%;
-      padding: 12px;
+    .content {
+      padding: 40px 30px;
+    }
+
+    .welcome-text {
+      font-size: 18px;
+      color: #2c3e50;
       margin-bottom: 20px;
-      border: none;
+    }
+
+    .otp-section {
+      text-align: center;
+      margin: 30px 0;
+      padding: 25px;
+      background: #f8f9ff;
+      border-radius: 10px;
+      border: 2px dashed #667eea;
+    }
+
+    .otp-label {
+      font-size: 16px;
+      color: #5a6c7d;
+      margin-bottom: 15px;
+    }
+
+    .otp-code {
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+      letter-spacing: 8px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    .instructions {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 25px 0;
+    }
+
+    .instructions h3 {
+      color: #856404;
+      margin-top: 0;
+      font-size: 16px;
+    }
+
+    .instructions ul {
+      color: #856404;
+      margin: 10px 0 0 20px;
+    }
+
+    .footer {
+      background: #2c3e50;
+      padding: 20px;
+      text-align: center;
+      color: #ecf0f1;
+    }
+
+    .footer p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .warning {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .email-container {
+        margin: 10px;
+        border-radius: 10px;
+      }
+      
+      .content {
+        padding: 25px 20px;
+      }
+      
+      .otp-code {
+        font-size: 28px;
+        letter-spacing: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>{{companyName}}</h1>
+    </div>
+    
+    <div class="content">
+      <div class="welcome-text">
+        <p>مرحباً <strong>{{userName}}</strong>،</p>
+        <p>شكراً لك على تسجيلك في منصتنا التعليمية. لإكمال عملية التسجيل وتفعيل حسابك، يرجى استخدام رمز التحقق أدناه:</p>
+      </div>
+
+      <div class="otp-section">
+        <div class="otp-label">رمز التحقق الخاص بك:</div>
+        <div class="otp-code">{{otp}}</div>
+        <p style="color: #666; font-size: 14px; margin-top: 15px;">
+          صالح لمدة 15 دقيقة فقط
+        </p>
+      </div>
+
+      <div class="instructions">
+        <h3>تعليمات مهمة:</h3>
+        <ul>
+          <li>أدخل هذا الرمز في صفحة التفعيل على موقعنا</li>
+          <li>الرمز صالح لمدة 15 دقيقة فقط من وقت الإرسال</li>
+          <li>لا تشارك هذا الرمز مع أي شخص آخر</li>
+          <li>إذا لم تطلب هذا الرمز، يرجى تجاهل هذا الإيميل</li>
+        </ul>
+      </div>
+
+      <div class="warning">
+        <strong>تنبيه أمني:</strong> إذا لم تقم بإنشاء حساب على منصتنا، فيرجى تجاهل هذا البريد الإلكتروني. لن نطلب منك أبداً مشاركة رمز التحقق عبر الهاتف أو البريد الإلكتروني.
+      </div>
+
+      <p style="text-align: center; margin-top: 30px; color: #666;">
+        إذا واجهت أي مشكلة، لا تتردد في التواصل مع فريق الدعم.
+      </p>
+    </div>
+    
+    <div class="footer">
+      <p><strong>{{companyName}}</strong></p>
+      <p>منصة التعلم الإلكتروني الرائدة</p>
+      <p style="font-size: 12px; margin-top: 15px;">
+        هذا بريد إلكتروني تلقائي، يرجى عدم الرد عليه مباشرة.
+      </p>
+    </div>
+  </div>
+</body>
       border-radius: 8px;
       outline: none;
       background: #262626;

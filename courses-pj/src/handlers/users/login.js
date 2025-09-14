@@ -4,36 +4,73 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export const loginUserHandler = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  try {
+    const { email, password, grade } = req.body;
 
-  if (!user) {
-    return res.status(401).json({ message: "Incorrect email or password" });
-  }
+    // البحث عن المستخدم بالبريد الإلكتروني والصف الدراسي
+    const user = await User.findOne({ email, grade });
 
-  const isPasswordCorrect = await bcrypt.compare(
-    req.body.password,
-    user.password
-  );
+    if (!user) {
+      return res.status(401).json({ 
+        message: "بيانات تسجيل الدخول غير صحيحة (البريد الإلكتروني أو الصف الدراسي)" 
+      });
+    }
 
-  if (!isPasswordCorrect) {
-    return res.status(401).json({ message: "Incorrect email or password" });
-  }
+    // التحقق من تفعيل الحساب
+    if (!user.isVerified) {
+      return res.status(403).json({ 
+        message: "يجب تفعيل الحساب أولاً", 
+        requiresVerification: true,
+        userEmail: user.email
+      });
+    }
 
-  const token = jwt.sign(
-    { userId: user._id, role: user.role, courseId: user.courseId },
-    environment.JWT_SECRET,
-    { expiresIn: environment.JWT_EXPIRES_IN }
-  );
+    // التحقق من كلمة المرور
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-  res.status(200).json({
-    message: "Login successful",
-    data: {
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ 
+        message: "كلمة المرور غير صحيحة" 
+      });
+    }
+
+    // إنشاء التوكن
+    const token = jwt.sign(
+      { 
+        userId: user._id, 
+        role: user.role, 
+        grade: user.grade,
+        courseId: user.courseId,
+        isVerified: user.isVerified
+      },
+      environment.JWT_SECRET,
+      { expiresIn: environment.JWT_EXPIRES_IN }
+    );
+
+    // إعداد بيانات المستخدم للإرسال
+    const userResponse = {
       id: user._id,
       name: user.name,
       email: user.email,
+      location: user.location,
+      grade: user.grade,
       role: user.role,
+      phone: user.phone,
       courseId: user.courseId,
-    },
-    token,
-  });
+      isVerified: user.isVerified
+    };
+
+    res.status(200).json({
+      message: "تم تسجيل الدخول بنجاح",
+      user: userResponse,
+      token,
+    });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      message: "حدث خطأ أثناء تسجيل الدخول", 
+      error: error.message 
+    });
+  }
 };

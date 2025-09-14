@@ -2,15 +2,29 @@ import { body } from "express-validator";
 
 export const validateUserLogin = [
   body("email")
-    .notEmpty().withMessage("Email is required")
-    .isEmail().withMessage("Invalid email format"),
+    .notEmpty().withMessage("البريد الإلكتروني مطلوب")
+    .isEmail().withMessage("صيغة البريد الإلكتروني غير صحيحة"),
 
   body("password")
-    .notEmpty().withMessage("Password is required")
-    .isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+    .notEmpty().withMessage("كلمة المرور مطلوبة")
+    .isLength({ min: 8 }).withMessage("كلمة المرور يجب أن تكون 8 أحرف على الأقل"),
 
-  body("role")
-    .optional()
-    .isIn(["instructor", "admin"])
-    .withMessage("Role must be either instructor or admin"),
+  body("grade")
+    .notEmpty().withMessage("الصف الدراسي مطلوب")
+    .isIn([
+      "الصف الأول الابتدائي",
+      "الصف الثاني الابتدائي", 
+      "الصف الثالث الابتدائي",
+      "الصف الرابع الابتدائي",
+      "الصف الخامس الابتدائي",
+      "الصف السادس الابتدائي",
+      "الصف الأول الإعدادي",
+      "الصف الثاني الإعدادي",
+      "الصف الثالث الإعدادي",
+      "الصف الأول الثانوي",
+      "الصف الثاني الثانوي",
+      "الصف الثالث الثانوي",
+      "جامعي",
+      "معلم"
+    ]).withMessage("يرجى اختيار صف دراسي صحيح"),
 ];

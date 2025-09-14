@@ -8,6 +8,14 @@ import {
   requestPasswordResetHandler,
   performPasswordResetHandler,
 } from "../../handlers/users/reset-password.js";
+import {
+  verifyOTPHandler,
+  resendOTPHandler,
+} from "../../handlers/users/verify-otp.js";
+import {
+  validateVerifyOTP,
+  validateResendOTP,
+} from "../../validations/otp.js";
 export const userRouter = express.Router();
 
 import { validationResult as expressValidationResult } from "express-validator";
@@ -38,3 +46,7 @@ userRouter.post(
 userRouter.post("/change-password", changePasswordHandler);
 userRouter.post("/reset-password/request", requestPasswordResetHandler);
 userRouter.post("/reset-password/perform", performPasswordResetHandler);
+
+// OTP Routes
+userRouter.post("/verify-otp", validateVerifyOTP, verifyOTPHandler);
+userRouter.post("/resend-otp", validateResendOTP, resendOTPHandler);

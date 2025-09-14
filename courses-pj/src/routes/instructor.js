@@ -16,4 +16,4 @@ const validationResult = (req, res, next) => {
   next();
 };
 
-instractorRouter.get("/", isAuthenticated, isAuthorized(["instructor","admin"]), validateCourse, createCourseHandler);
+instractorRouter.get("/", isAuthenticated, isAuthorized(["instructor","admin"]), validationResult, createCourseHandler);

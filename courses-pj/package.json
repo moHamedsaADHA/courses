@@ -2,11 +2,15 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "config": "^4.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
+    "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.17.1"
+    "mongoose": "^8.17.1",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.6"
   },
   "name": "nodejs-session-5-codezone",
   "version": "1.0.0",

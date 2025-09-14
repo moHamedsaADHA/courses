@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار CORS - منصة الكورسات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار CORS - منصة الكورسات</h1>
+        
+        <h2>1. تسجيل مستخدم جديد</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">الاسم الرباعي:</label>
+                <input type="text" id="name" name="name" placeholder="محمد أحمد علي السيد" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني:</label>
+                <input type="email" id="email" name="email" placeholder="user@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="password" name="password" placeholder="StrongPass123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">المكان:</label>
+                <input type="text" id="location" name="location" placeholder="القاهرة" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="grade">الصف الدراسي:</label>
+                <select id="grade" name="grade" required>
+                    <option value="">اختر الصف الدراسي</option>
+                    <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+                    <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+                    <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+                    <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+                    <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+                    <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+                    <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                    <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                    <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                    <option value="جامعي">جامعي</option>
+                    <option value="معلم">معلم</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">رقم الهاتف (اختياري):</label>
+                <input type="tel" id="phone" name="phone" placeholder="01012345678">
+            </div>
+            
+            <button type="submit">تسجيل مستخدم جديد</button>
+        </form>
+        
+        <h2>2. تسجيل الدخول</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">البريد الإلكتروني:</label>
+                <input type="email" id="loginEmail" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">كلمة المرور:</label>
+                <input type="password" id="loginPassword" name="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginGrade">الصف الدراسي:</label>
+                <select id="loginGrade" name="grade" required>
+                    <option value="">اختر الصف الدراسي</option>
+                    <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+                    <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+                    <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+                    <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+                    <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+                    <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+                    <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                    <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                    <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                    <option value="جامعي">جامعي</option>
+                    <option value="معلم">معلم</option>
+                </select>
+            </div>
+            
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+        
+        <h2>3. الحصول على الكورسات</h2>
+        <button id="getCoursesBtn">الحصول على جميع الكورسات</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        const responseDiv = document.getElementById('response');
+        
+        function showResponse(message, type = 'info') {
+            responseDiv.style.display = 'block';
+            responseDiv.className = `response ${type}`;
+            responseDiv.textContent = typeof message === 'string' ? message : JSON.stringify(message, null, 2);
+        }
+        
+        // تسجيل مستخدم جديد
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const userData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                location: formData.get('location'),
+                grade: formData.get('grade'),
+                role: 'student',
+                phone: formData.get('phone') || undefined
+            };
+            
+            try {
+                showResponse('جاري إرسال طلب التسجيل...', 'info');
+                
+                const response = await fetch(`${API_BASE}/users/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResponse(`نجح التسجيل! 
+Message: ${result.message}
+User ID: ${result.user._id}
+Temp Token: ${result.tempToken}`, 'success');
+                } else {
+                    showResponse(`فشل التسجيل:
+Status: ${response.status}
+${JSON.stringify(result, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`خطأ في الشبكة: ${error.message}`, 'error');
+            }
+        });
+        
+        // تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const loginData = {
+                email: formData.get('email'),
+                password: formData.get('password'),
+                grade: formData.get('grade')
+            };
+            
+            try {
+                showResponse('جاري تسجيل الدخول...', 'info');
+                
+                const response = await fetch(`${API_BASE}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResponse(`نجح تسجيل الدخول!
+Message: ${result.message}
+User: ${result.user.name}
+Token: ${result.token}`, 'success');
+                } else {
+                    showResponse(`فشل تسجيل الدخول:
+Status: ${response.status}
+${JSON.stringify(result, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`خطأ في الشبكة: ${error.message}`, 'error');
+            }
+        });
+        
+        // الحصول على الكورسات
+        document.getElementById('getCoursesBtn').addEventListener('click', async () => {
+            try {
+                showResponse('جاري الحصول على الكورسات...', 'info');
+                
+                const response = await fetch(`${API_BASE}/courses/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResponse(`نجح الحصول على الكورسات:
+${JSON.stringify(result, null, 2)}`, 'success');
+                } else {
+                    showResponse(`فشل الحصول على الكورسات:
+Status: ${response.status}
+${JSON.stringify(result, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResponse(`خطأ في الشبكة: ${error.message}`, 'error');
+            }
+        });
+        
+        // إضافة بيانات تجريبية سريعة
+        document.getElementById('name').value = 'محمد أحمد علي السيد';
+        document.getElementById('email').value = 'test@example.com';
+        document.getElementById('password').value = 'TestPass123';
+        document.getElementById('location').value = 'القاهرة';
+        document.getElementById('grade').value = 'الصف الثالث الثانوي';
+        document.getElementById('phone').value = '01012345678';
+    </script>
+</body>
+</html>

@@ -11,8 +11,14 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASS = process.env.EMAIL_PASS;
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_SMTP_HOST = process.env.BREVO_SMTP_HOST || "smtp-relay.brevo.com";
+const BREVO_SMTP_PORT = process.env.BREVO_SMTP_PORT || 587;
+const BREVO_SMTP_USER = process.env.BREVO_SMTP_USER;
+const BREVO_SMTP_PASS = process.env.BREVO_SMTP_PASS;
+const EMAIL_FROM = process.env.EMAIL_FROM;
+const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME || "منصة الكورسات";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 export const environment = {
   SERVER_PORT,
@@ -20,6 +26,12 @@ export const environment = {
   JWT_SECRET,
   JWT_EXPIRES_IN,
   CORS_ORIGIN,
-  EMAIL_USER,
-  EMAIL_PASS,
+  BREVO_API_KEY,
+  BREVO_SMTP_HOST,
+  BREVO_SMTP_PORT,
+  BREVO_SMTP_USER,
+  BREVO_SMTP_PASS,
+  EMAIL_FROM,
+  EMAIL_FROM_NAME,
+  FRONTEND_URL,
 };

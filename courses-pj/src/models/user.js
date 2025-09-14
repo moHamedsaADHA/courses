@@ -6,6 +6,16 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
+      validate: {
+        validator: function(v) {
+          // التحقق من وجود كلمتين على الأقل
+          if (!v || typeof v !== 'string') return false;
+          const words = v.trim().split(/\s+/);
+          return words.length >= 2;
+        },
+        message: 'يجب أن يحتوي الاسم على كلمتين على الأقل'
+      }
     },
     password: {
       type: String,
@@ -20,9 +30,46 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    location: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    grade: {
+      type: String,
+      required: true,
+      enum: [
+        "الصف الأول الابتدائي",
+        "الصف الثاني الابتدائي", 
+        "الصف الثالث الابتدائي",
+        "الصف الرابع الابتدائي",
+        "الصف الخامس الابتدائي",
+        "الصف السادس الابتدائي",
+        "الصف الأول الإعدادي",
+        "الصف الثاني الإعدادي",
+        "الصف الثالث الإعدادي",
+        "الصف الأول الثانوي",
+        "الصف الثاني الثانوي",
+        "الصف الثالث الثانوي",
+        "جامعي",
+        "معلم"
+      ]
     },
     phone: {
       type: String,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    otp: {
+      type: String,
+    },
+    otpExpires: {
+      type: Date,
     },
     courseId: [
       {
