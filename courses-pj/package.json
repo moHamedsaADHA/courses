@@ -18,7 +18,9 @@
   "main": "app.js",
   "scripts": {
     "run": "node app.js",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "vercel:link": "npx vercel@latest link",
+    "vercel:dev": "npx vercel@latest dev"
   },
   "keywords": [],
   "author": "",

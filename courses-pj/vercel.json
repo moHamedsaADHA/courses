@@ -5,7 +5,7 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/ping", "destination": "/api/ping.js" },
     { "source": "/(.*)", "destination": "/api/index.js" }
   ]
 }
