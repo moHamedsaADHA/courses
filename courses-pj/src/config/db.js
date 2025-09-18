@@ -13,8 +13,9 @@ export const connectDB = async () => {
 
     console.log("MongoDB connected...");
   } catch (err) {
-    console.error("MongoDB connection error:", err);
-    process.exit(1);
+    console.error("MongoDB connection error:", err?.message || err);
+    // In serverless (Vercel), avoid exiting the process. Continue and let routes handle lack of DB.
+    // throw err; // optionally rethrow in local dev if needed
   }
 
   mongoose.connection.on("disconnected", () => {

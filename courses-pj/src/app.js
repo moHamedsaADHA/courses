@@ -76,3 +76,8 @@ app.get('/api/health', (req, res) => {
 app.use(globalErrorHandler);
 
 export default app;
+ 
+// Express 404 handler (after all routes and error handler registration)
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found', path: req.originalUrl });
+});
