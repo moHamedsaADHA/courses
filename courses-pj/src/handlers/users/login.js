@@ -5,14 +5,14 @@ import bcrypt from "bcryptjs";
 
 export const loginUserHandler = async (req, res) => {
   try {
-    const { email, password, grade } = req.body;
+    const { email, password } = req.body;
 
-    // البحث عن المستخدم بالبريد الإلكتروني والصف الدراسي
-    const user = await User.findOne({ email, grade });
+    // البحث عن المستخدم بالبريد الإلكتروني فقط
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ 
-        message: "بيانات تسجيل الدخول غير صحيحة (البريد الإلكتروني أو الصف الدراسي)" 
+        message: "بيانات تسجيل الدخول غير صحيحة (البريد الإلكتروني غير موجود)" 
       });
     }
 

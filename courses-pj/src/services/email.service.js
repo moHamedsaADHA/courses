@@ -307,6 +307,59 @@ class EmailService {
   getEmailLog() {
     return this.emailLog;
   }
+
+  /**
+   * اختبار إرسال OTP لتأكيد عمل الخدمة
+   * @param {string} testEmail - البريد الإلكتروني للاختبار
+   * @returns {Promise<Object>} - نتيجة الاختبار
+   */
+  async testOTPSending(testEmail = 'test@example.com') {
+    const testOTP = this.generateOTP();
+    console.log(`🧪 اختبار إرسال OTP للإيميل: ${testEmail}`);
+    console.log(`🔢 رمز OTP للاختبار: ${testOTP}`);
+    
+    try {
+      const result = await this.sendOTPEmail(testEmail, 'مستخدم تجريبي', testOTP);
+      console.log('✅ نجح اختبار إرسال OTP');
+      return { success: true, otp: testOTP, result };
+    } catch (error) {
+      console.error('❌ فشل اختبار إرسال OTP:', error.message);
+      return { success: false, otp: testOTP, error: error.message };
+    }
+  }
+
+  /**
+   * طباعة معلومات تشخيص البريد الإلكتروني
+   */
+  printEmailDiagnostics() {
+    console.log("=".repeat(60));
+    console.log("📊 تشخيص خدمة البريد الإلكتروني");
+    console.log("=".repeat(60));
+    console.log(`🏢 خادم SMTP: ${this.transporter.options.host}:${this.transporter.options.port}`);
+    console.log(`👤 مستخدم SMTP: ${this.transporter.options.auth?.user || 'غير محدد'}`);
+    console.log(`📧 البريد المرسل: ${this.senderEmail} (${this.senderName})`);
+    console.log(`🔄 عدد محاولات إعادة الإرسال: ${this.maxRetries}`);
+    console.log(`⏱️ تأخير إعادة المحاولة: ${this.retryDelay}ms`);
+    console.log(`📨 عدد الرسائل المسجلة: ${this.emailLog.length}`);
+    
+    if (this.emailLog.length > 0) {
+      const successCount = this.emailLog.filter(log => log.success).length;
+      const failureCount = this.emailLog.length - successCount;
+      console.log(`✅ الرسائل الناجحة: ${successCount}`);
+      console.log(`❌ الرسائل الفاشلة: ${failureCount}`);
+      
+      // آخر 3 رسائل
+      console.log("\n📋 آخر 3 رسائل:");
+      this.emailLog.slice(-3).forEach((log, index) => {
+        const status = log.success ? '✅' : '❌';
+        console.log(`  ${index + 1}. ${status} ${log.type} إلى ${log.recipient} في ${log.timestamp.toLocaleString('ar-EG')}`);
+        if (!log.success && log.error) {
+          console.log(`     خطأ: ${log.error}`);
+        }
+      });
+    }
+    console.log("=".repeat(60));
+  }
 }
 
 export const emailService = new EmailService();

@@ -7,6 +7,10 @@ import { coursesRouter } from "./routes/course.js";
 import { categoryRouter } from "./routes/category.js";
 import { userRouter as usersRouter } from "./routes/auth-routes/user.js";
 import { globalErrorHandler } from "./middlewares/globalError.middleware.js";
+import { lessonRouter } from './routes/lesson.js';
+import { scheduleRouter } from './routes/schedule.js';
+import taskRouter from './routes/task.js';
+import quizRouter from './routes/quiz.js';
 
 const app = express();
 
@@ -54,6 +58,10 @@ connectDB();
 app.use("/api/courses", coursesRouter); 
 app.use("/api/categories", categoryRouter); 
 app.use("/api/users", usersRouter);
+app.use('/api/lessons', lessonRouter);
+app.use('/api/schedule', scheduleRouter);
+app.use('/api/tasks', taskRouter);
+app.use('/api/quizzes', quizRouter);
 
 app.use(globalErrorHandler);
 
