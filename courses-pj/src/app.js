@@ -53,6 +53,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Connect to DB on cold start (serverless-safe)
 connectDB();
 
 app.use("/api/courses", coursesRouter); 
@@ -63,8 +64,15 @@ app.use('/api/schedule', scheduleRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/quizzes', quizRouter);
 
+// Basic root and health endpoints
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'Courses API', version: '1.0.0' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true });
+});
+
 app.use(globalErrorHandler);
 
-app.listen(environment.SERVER_PORT, () => {
-  console.log(`Server is running on port ${environment.SERVER_PORT}`);
-});
+export default app;

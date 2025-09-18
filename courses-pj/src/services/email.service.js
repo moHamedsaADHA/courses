@@ -2,6 +2,7 @@ import { environment } from "../config/server.config.js";
 import nodemailer from 'nodemailer';
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 class EmailService {
   constructor() {
@@ -55,7 +56,9 @@ class EmailService {
     
     try {
       // قراءة قالب البريد الإلكتروني
-      const templatePath = path.join(process.cwd(), 'src', 'templates', 'email.template.html');
+  // Resolve template path relative to this file (works in serverless bundles)
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const templatePath = path.resolve(__dirname, '..', 'templates', 'email.template.html');
       let htmlTemplate = await fs.readFile(templatePath, 'utf-8');
       
       // استبدال المتغيرات في القالب
