@@ -23,6 +23,7 @@ const corsOptions = {
     'http://localhost:8080',
     'http://localhost:8000',
     'https://mohamedsaadha.github.io/courses_f',
+    'https://mohamedsaadha.github.io',
     environment.CORS_ORIGIN
   ].filter(Boolean), // إزالة القيم الفارغة
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
