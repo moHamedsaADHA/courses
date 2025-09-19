@@ -24,6 +24,7 @@ const corsOptions = {
     'http://localhost:8000',
     'https://mohamedsaadha.github.io/courses_f',
     'https://mohamedsaadha.github.io',
+    'https://courses-delta-fawn.vercel.app',
     environment.CORS_ORIGIN
   ].filter(Boolean), // إزالة القيم الفارغة
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
