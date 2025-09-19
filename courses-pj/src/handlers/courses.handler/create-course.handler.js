@@ -5,15 +5,19 @@ export const createCourseHandler = async (req, res) => {
   const instructorId = req.user?.userId || req.user?.instructorId || req.user?.id;
 
   console.log("Instructor ID:", instructorId);
-  if (!req.user || !req.user.role) {
-    return res.status(403).json({ message: "Forbidden: no role" });
+  
+  // التحقق من أن المستخدم instructor (أي instructor يقدر ينشئ كورس)
+  if (!req.user || req.user.role !== 'instructor') {
+    return res.status(403).json({ 
+      message: "Forbidden: Only instructors can create courses" 
+    });
   }
 
   const course = await Course.create({
     ...req.body,
-    instructorId,
+    instructorId, // لا يزال نحفظ مين أنشأ الكورس للمرجعية
   });
 
-  console.log(req.user);
+  console.log("Course created by instructor:", req.user.email);
   res.status(201).json(course);
 };
