@@ -49,6 +49,8 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Max-Age', '86400'); // cache preflight لمدة يوم
   
+
+  
   if (req.method === 'OPTIONS') {
     console.log('Preflight request handled');
     return res.sendStatus(200);
