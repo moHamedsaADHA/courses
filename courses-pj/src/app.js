@@ -25,6 +25,7 @@ const corsOptions = {
     'https://mohamedsaadha.github.io/courses_f',
     'https://mohamedsaadha.github.io',
     'https://courses-delta-fawn.vercel.app',
+    'https://stellular-manatee-69e2de.netlify.app',
     environment.CORS_ORIGIN
   ].filter(Boolean), // إزالة القيم الفارغة
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -50,7 +51,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Max-Age', '86400'); // cache preflight لمدة يوم
   
 
-  
+
   if (req.method === 'OPTIONS') {
     console.log('Preflight request handled');
     return res.sendStatus(200);
