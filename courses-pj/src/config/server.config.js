@@ -20,6 +20,11 @@ const EMAIL_FROM = process.env.EMAIL_FROM;
 const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME || "منصة الكورسات";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
+// Gmail SMTP الجديد (المجرب)
+const EMAILTEST = process.env.EMAILTEST;
+const APIKE = process.env.APIKE;
+const EMAIL = process.env.EMAIL || "courses";
+
 export const environment = {
   SERVER_PORT,
   DB_URL,
@@ -34,4 +39,8 @@ export const environment = {
   EMAIL_FROM,
   EMAIL_FROM_NAME,
   FRONTEND_URL,
+  // Gmail SMTP الجديد
+  EMAILTEST,
+  APIKE,
+  EMAIL,
 };

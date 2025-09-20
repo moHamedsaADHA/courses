@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { mockEmailService } from './mock-email.service.js';
 
 class EmailService {
   constructor() {
@@ -44,6 +45,18 @@ class EmailService {
    * @returns {Promise<Object>} - نتيجة إرسال البريد
    */
   async sendOTPEmail(userEmail, userName, otp) {
+    // استخدام النظام الجديد المجرب من المشروع الشغال
+    const USE_NEW_EMAIL = environment.EMAILTEST && environment.APIKE;
+    
+    if (USE_NEW_EMAIL) {
+      console.log('📧 استخدام New Email Service (المجرب والشغال)');
+      const { sendOTPEmail } = await import('./new-email.service.js');
+      return await sendOTPEmail(userEmail, otp, userName);
+    } else {
+      console.log('🔧 استخدام Mock Email Service للتطوير');
+      return await mockEmailService.sendOTPEmail(userEmail, otp, userName);
+    }
+
     const emailId = `otp-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const logEntry = {
       id: emailId,
