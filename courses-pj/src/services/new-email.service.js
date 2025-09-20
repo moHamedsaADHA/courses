@@ -143,4 +143,80 @@ export const sendWelcomeEmail = async (email, userName) => {
   }
 };
 
+// دالة لإرسال بريد إعادة تعيين كلمة المرور
+export const sendResetPasswordEmail = async (email, userName, resetLink, resetToken) => {
+  try {
+    const title = "إعادة تعيين كلمة المرور - منصة الكورسات";
+    
+    const body = `
+      <div style="font-family: Arial, sans-serif; direction: rtl; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f7f7f7;">
+        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h2 style="color: #FF5722; text-align: center; margin-bottom: 30px;">
+            🔐 إعادة تعيين كلمة المرور
+          </h2>
+          
+          <p style="font-size: 18px; color: #333; margin-bottom: 20px;">
+            مرحباً <strong>${userName}</strong>،
+          </p>
+          
+          <p style="color: #666; line-height: 1.6; margin-bottom: 30px;">
+            تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك في منصة الكورسات. إذا لم تطلب هذا، يُرجى تجاهل هذا البريد.
+          </p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" 
+               style="background: #FF5722; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+              🔄 إعادة تعيين كلمة المرور
+            </a>
+          </div>
+          
+          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0; color: #856404; font-size: 14px;">
+              ⚠️ <strong>تنبيه:</strong> هذا الرابط صالح لمدة ساعة واحدة فقط
+            </p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 0; font-size: 12px; color: #666;">
+              إذا لم يعمل الرابط، انسخ الكود التالي واستخدمه في صفحة إعادة التعيين:
+            </p>
+            <p style="font-family: monospace; background: #e9ecef; padding: 10px; margin: 10px 0; border-radius: 3px; word-break: break-all; font-size: 11px;">
+              ${resetToken}
+            </p>
+          </div>
+          
+          <p style="color: #666; font-size: 14px; margin-top: 30px;">
+            إذا لم تطلب إعادة تعيين كلمة المرور، يُرجى تجاهل هذا البريد الإلكتروني. حسابك آمن.
+          </p>
+          
+          <hr style="border: none; height: 1px; background: #eee; margin: 30px 0;">
+          
+          <p style="text-align: center; color: #999; font-size: 12px;">
+            © 2025 منصة الكورسات التعليمية - جميع الحقوق محفوظة
+          </p>
+        </div>
+      </div>
+    `;
+
+    const result = await mailSender(email, title, body);
+    
+    console.log(`✅ تم إرسال بريد إعادة تعيين كلمة المرور إلى ${email}`);
+    
+    return {
+      success: true,
+      messageId: result.messageId,
+      message: 'تم إرسال بريد إعادة تعيين كلمة المرور بنجاح'
+    };
+    
+  } catch (error) {
+    console.error('❌ فشل إرسال بريد إعادة تعيين كلمة المرور:', error.message);
+    
+    return {
+      success: false,
+      error: error.message,
+      message: 'فشل في إرسال بريد إعادة تعيين كلمة المرور'
+    };
+  }
+};
+
 export default mailSender;

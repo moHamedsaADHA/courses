@@ -11,23 +11,14 @@ import { lessonRouter } from './routes/lesson.js';
 import { scheduleRouter } from './routes/schedule.js';
 import taskRouter from './routes/task.js';
 import quizRouter from './routes/quiz.js';
+import { analyticsRouter } from './routes/analytics.js';
+import { studentRouter } from './routes/student.js';
 
 const app = express();
 
-// إعدادات CORS
+// إعدادات CORS مفتوحة لجميع المنافذ في التطوير
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5500', 
-    'http://127.0.0.1:5500',
-    'http://localhost:8080',
-    'http://localhost:8000',
-    'https://mohamedsaadha.github.io/courses_f',
-    'https://mohamedsaadha.github.io',
-    'https://courses-delta-fawn.vercel.app',
-    'https://stellular-manatee-69e2de.netlify.app',
-    environment.CORS_ORIGIN
-  ].filter(Boolean), // إزالة القيم الفارغة
+  origin: true, // السماح لجميع المصادر في التطوير
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
@@ -41,8 +32,13 @@ app.use(express.json());
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   
-  // تسجيل الطلبات للتشخيص (يمكن إزالته في الإنتاج)
-  console.log(`${req.method} ${req.path} - Origin: ${origin}`);
+  // تسجيل الطلبات للتشخيص مع معلومات إضافية
+  console.log(`🌐 ${req.method} ${req.path} - Origin: ${origin || 'No Origin'}`);
+  if (req.headers.authorization) {
+    console.log(`🔑 Auth: ${req.headers.authorization.substring(0, 20)}...`);
+  } else {
+    console.log(`❌ No Authorization header`);
+  }
   
   res.header('Access-Control-Allow-Origin', origin || '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
@@ -69,6 +65,8 @@ app.use('/api/lessons', lessonRouter);
 app.use('/api/schedule', scheduleRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/quizzes', quizRouter);
+app.use('/api/analytics', analyticsRouter);
+app.use('/api/students', studentRouter);
 
 // Basic root and health endpoints
 app.get('/', (req, res) => {

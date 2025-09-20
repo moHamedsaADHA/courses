@@ -34,20 +34,22 @@ export const loginUserHandler = async (req, res) => {
       });
     }
 
-    // إنشاء التوكن
-    const token = jwt.sign(
-      { 
-        userId: user._id, 
-        role: user.role, 
-        grade: user.grade,
-        courseId: user.courseId,
-        isVerified: user.isVerified
-      },
-      environment.JWT_SECRET,
-      { expiresIn: environment.JWT_EXPIRES_IN }
-    );
+    // إنشاء Access Token و Refresh Token
+    const { jwtService } = await import('../../services/jwt.service.js');
+    
+    const tokens = jwtService.generateTokens({
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      grade: user.grade,
+      courseId: user.courseId,
+      isVerified: user.isVerified
+    });
 
-    // إعداد بيانات المستخدم للإرسال
+    // للتوافق مع الكود القديم
+    const token = tokens.accessToken;
+
+    // إعداد بيانات المستخدم للإرسال (جميع البيانات)
     const userResponse = {
       id: user._id,
       name: user.name,
@@ -55,15 +57,30 @@ export const loginUserHandler = async (req, res) => {
       location: user.location,
       grade: user.grade,
       role: user.role,
-      phone: user.phone,
-      courseId: user.courseId,
-      isVerified: user.isVerified
+      phone: user.phone || null,
+      courseId: user.courseId || [],
+      isVerified: user.isVerified,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
     };
 
     res.status(200).json({
+      success: true,
       message: "تم تسجيل الدخول بنجاح",
+      data: {
+        user: userResponse,
+        tokens: {
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          expiresIn: tokens.expiresIn,
+          tokenType: tokens.tokenType
+        }
+      },
+      // للتوافق مع الكود القديم
       user: userResponse,
-      token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      token: tokens.accessToken,
     });
 
   } catch (error) {

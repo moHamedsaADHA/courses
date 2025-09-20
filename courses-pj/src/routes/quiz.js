@@ -18,6 +18,12 @@ import { getQuizzesByGradeTwoLiterature } from '../handlers/quizzes/get-quizzes-
 import { getQuizzesByGradeThreeScience } from '../handlers/quizzes/get-quizzes-grade-3-science.handler.js';
 import { getQuizzesByGradeThreeLiterature } from '../handlers/quizzes/get-quizzes-grade-3-literature.handler.js';
 
+// استيراد handlers حل الكويزات للطلاب
+import { startQuizHandler } from '../handlers/quizzes/start-quiz.handler.js';
+import { submitQuizHandler } from '../handlers/quizzes/submit-quiz.handler.js';
+import { getStudentResultsHandler } from '../handlers/quizzes/get-student-results.handler.js';
+import { getQuizResultDetailsHandler } from '../handlers/quizzes/get-quiz-result-details.handler.js';
+
 const router = express.Router();
 
 // CRUD العام للكويزات
@@ -73,6 +79,36 @@ router.get(
   '/grade/third-secondary-literature',
   isAuthenticated,
   getQuizzesByGradeThreeLiterature
+);
+
+// === مسارات حل الكويزات للطلاب ===
+
+// بدء كويز (جلب الأسئلة للطالب)
+router.get(
+  '/:quizId/start',
+  isAuthenticated,
+  startQuizHandler
+);
+
+// إرسال إجابات الكويز
+router.post(
+  '/:quizId/submit',
+  isAuthenticated,
+  submitQuizHandler
+);
+
+// جلب نتائج الطالب في جميع الكويزات
+router.get(
+  '/results/my-results',
+  isAuthenticated,
+  getStudentResultsHandler
+);
+
+// جلب تفاصيل نتيجة كويز محددة
+router.get(
+  '/results/:resultId/details',
+  isAuthenticated,
+  getQuizResultDetailsHandler
 );
 
 // جلب كويز واحد

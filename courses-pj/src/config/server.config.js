@@ -7,6 +7,7 @@ const SERVER_PORT = process.env.PORT || 3000;
 const DB_URL = process.env.DB_URL || "mongodb://localhost:27017/coursesdb";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "supersecret_refresh";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
@@ -29,6 +30,7 @@ export const environment = {
   SERVER_PORT,
   DB_URL,
   JWT_SECRET,
+  JWT_REFRESH_SECRET,
   JWT_EXPIRES_IN,
   CORS_ORIGIN,
   BREVO_API_KEY,
