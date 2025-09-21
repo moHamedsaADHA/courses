@@ -2,6 +2,7 @@ import { environment } from "../../config/server.config.js";
 import { User } from "../../models/user.js";
 import { emailService } from "../../services/email.service.js";
 import jwt from "jsonwebtoken";
+import { Code } from "../../models/code.js";
 
 export const registerUserHandler = async (req, res, next) => {
   try {
@@ -28,6 +29,18 @@ export const registerUserHandler = async (req, res, next) => {
     console.log(`📨 الإيميل المستهدف: ${req.body.email}`);
     console.log("=".repeat(50));
 
+    // تحقق من الكود إذا كان الدور معلم أو أدمن أو طالب
+    let usedCode = null;
+    if (["admin", "instructor", "student"].includes(req.body.role || "student")) {
+      if (!req.body.code) {
+        return res.status(400).json({ message: "يرجى إدخال كود التسجيل الصحيح" });
+      }
+      usedCode = await Code.findOne({ code: req.body.code, role: req.body.role || "student", used: false });
+      if (!usedCode) {
+        return res.status(400).json({ message: "كود التسجيل غير صحيح أو مستخدم بالفعل" });
+      }
+    }
+
     // إنشاء المستخدم مع OTP
     const user = await User.create({
       name: req.body.name,
@@ -38,10 +51,18 @@ export const registerUserHandler = async (req, res, next) => {
       grade: req.body.grade,
       role: req.body.role || "student",
       phone: req.body.phone,
+      code: req.body.code || undefined,
       otp: otp,
       otpExpires: otpExpires,
       isVerified: false
     });
+
+    // إذا كان هناك كود، حدثه ليصبح مستخدم واربطه بالمستخدم
+    if (usedCode) {
+      usedCode.used = true;
+      usedCode.usedBy = user._id;
+      await usedCode.save();
+    }
 
     // التحقق من حالة الاتصال بخدمة البريد أولاً
     console.log("🔍 فحص الاتصال بخدمة البريد الإلكتروني...");

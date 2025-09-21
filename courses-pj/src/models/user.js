@@ -54,6 +54,13 @@ const UserSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
+    code: {
+      type: String,
+      trim: true,
+      required: function() {
+        return this.role === 'admin' || this.role === 'instructor';
+      }
+    },
     isVerified: {
       type: Boolean,
       default: false,
