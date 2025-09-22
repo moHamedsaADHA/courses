@@ -64,7 +64,7 @@ export const updateTask = async (req, res, next) => {
       });
     }
 
-    const { title, description, dueDate, grade, subject, priority, status, attachments } = req.body;
+  const { title, description, dueDate, grade, subject, priority, status, attachments, questions } = req.body;
 
     // التحقق من عدم التضارب في العنوان والصف والمادة (إذا تم تغييرها)
     if (title || grade || subject) {
@@ -103,6 +103,7 @@ export const updateTask = async (req, res, next) => {
     if (priority) updateData.priority = priority;
     if (status) updateData.status = status;
     if (attachments) updateData.attachments = attachments;
+    if (Array.isArray(questions)) updateData.questions = questions;
 
     // تحديث المهمة
     const updatedTask = await Task.findByIdAndUpdate(

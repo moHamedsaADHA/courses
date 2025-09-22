@@ -1,6 +1,53 @@
 import mongoose from 'mongoose';
 
 const taskSchema = new mongoose.Schema({
+  // دعم الأسئلة مثل الكويز
+  questions: [{
+    questionText: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 500
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ['صح وخطأ', 'اختر من متعدد']
+    },
+    // للأسئلة من نوع اختر من متعدد
+    options: [{
+      text: {
+        type: String,
+        required: function() {
+          return this.parent().type === 'اختر من متعدد';
+        },
+        trim: true,
+        maxlength: 200
+      },
+      isCorrect: {
+        type: Boolean,
+        default: false
+      }
+    }],
+    // للأسئلة من نوع صح وخطأ
+    correctAnswer: {
+      type: Boolean,
+      required: function() {
+        return this.type === 'صح وخطأ';
+      }
+    },
+    explanation: {
+      type: String,
+      trim: true,
+      maxlength: 300
+    },
+    points: {
+      type: Number,
+      default: 1,
+      min: 1,
+      max: 10
+    }
+  }],
   title: {
     type: String,
     required: true,
@@ -9,7 +56,6 @@ const taskSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
     trim: true,
     maxlength: 1000
   },

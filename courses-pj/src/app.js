@@ -9,10 +9,12 @@ import { userRouter as usersRouter } from "./routes/auth-routes/user.js";
 import { globalErrorHandler } from "./middlewares/globalError.middleware.js";
 import { lessonRouter } from './routes/lesson.js';
 import { scheduleRouter } from './routes/schedule.js';
+
 import taskRouter from './routes/task.js';
 import quizRouter from './routes/quiz.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { studentRouter } from './routes/student.js';
+import educationalMaterialRouter from './routes/educational-material.js';
 
 const app = express();
 
@@ -67,6 +69,9 @@ app.use('/api/tasks', taskRouter);
 app.use('/api/quizzes', quizRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/students', studentRouter);
+
+// Educational Materials
+app.use('/api/educational-materials', educationalMaterialRouter);
 
 // Basic root and health endpoints
 app.get('/', (req, res) => {

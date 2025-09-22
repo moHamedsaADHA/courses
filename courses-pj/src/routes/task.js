@@ -20,6 +20,22 @@ import { getTasksByGradeThreeLiterature } from '../handlers/tasks/get-tasks-grad
 
 const router = express.Router();
 
+// جلب نتائج المهام للمستخدم الحالي
+import { getUserTaskResultsHandler } from '../handlers/tasks/get-user-task-results.handler.js';
+router.get(
+  '/results/my-results',
+  isAuthenticated,
+  getUserTaskResultsHandler
+);
+
+// تسليم مهمة (حل المهمة من قبل الطالب)
+import { submitTaskHandler } from '../handlers/tasks/submit-task.handler.js';
+router.post(
+  '/:taskId/submit',
+  isAuthenticated,
+  submitTaskHandler
+);
+
 // CRUD العام للمهام
 // إنشاء مهمة جديدة (للمدرسين والإداريين فقط)
 router.post(

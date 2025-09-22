@@ -8,12 +8,7 @@ export const getStudentResultsHandler = async (req, res) => {
     // جلب بيانات المستخدم
     const user = await User.findById(userId).select('name grade role');
     
-    if (user.role !== 'student') {
-      return res.status(403).json({
-        success: false,
-        message: "هذه الميزة متاحة للطلاب فقط"
-      });
-    }
+    // متاح لجميع المستخدمين
 
     // جلب نتائج الطالب
     const results = await QuizResult.find({ student: userId })
@@ -31,11 +26,12 @@ export const getStudentResultsHandler = async (req, res) => {
     if (!results || results.length === 0) {
       return res.status(200).json({
         success: true,
-        message: "لم تقم بحل أي كويز بعد",
+        message: "لا توجد نتائج كويزات لهذا المستخدم",
         data: {
-          student: {
+          user: {
             name: user.name,
-            grade: user.grade
+            grade: user.grade,
+            role: user.role
           },
           results: [],
           statistics: {
@@ -102,11 +98,12 @@ export const getStudentResultsHandler = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "تم جلب النتائج بنجاح",
+      message: "تم جلب نتائج الكويزات بنجاح",
       data: {
-        student: {
+        user: {
           name: user.name,
-          grade: user.grade
+          grade: user.grade,
+          role: user.role
         },
         results: formattedResults,
         statistics: {

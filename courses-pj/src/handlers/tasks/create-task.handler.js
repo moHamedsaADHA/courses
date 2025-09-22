@@ -39,23 +39,9 @@ export const createTask = async (req, res, next) => {
       });
     }
 
-    const { title, description, dueDate, grade, subject, priority, status, attachments } = req.body;
+  const { title, description, dueDate, grade, subject, priority, status, attachments, questions } = req.body;
 
-    // التحقق من عدم وجود مهمة بنفس العنوان والصف والمادة
-    const existingTask = await Task.findOne({
-      title: title.trim(),
-      grade,
-      subject: subject.trim(),
-      status: { $ne: 'ملغي' }
-    });
-
-    if (existingTask) {
-      console.log('⚠️ توجد مهمة بنفس العنوان والصف والمادة');
-      return res.status(409).json({
-        success: false,
-        message: 'توجد مهمة أخرى بنفس العنوان والصف والمادة'
-      });
-    }
+    // تم إلغاء التحقق من تكرار العنوان والصف والمادة بناءً على طلب العميل
 
     // إنشاء المهمة الجديدة
     const newTask = new Task({
@@ -67,7 +53,8 @@ export const createTask = async (req, res, next) => {
       priority: priority || 'متوسط',
       status: status || 'نشط',
       attachments: attachments || [],
-      createdBy: req.user._id
+      createdBy: req.user._id,
+      questions: Array.isArray(questions) ? questions : []
     });
 
     const savedTask = await newTask.save();
