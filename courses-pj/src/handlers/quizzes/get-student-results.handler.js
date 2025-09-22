@@ -66,35 +66,39 @@ export const getStudentResultsHandler = async (req, res) => {
     }, {});
 
     // إعداد النتائج للعرض
-    const formattedResults = results.map(result => ({
-      id: result._id,
-      quiz: {
-        title: result.quiz.title,
-        subject: result.quiz.subject,
-        grade: result.quiz.grade,
-        totalQuestions: result.quiz.totalQuestions,
-        totalPoints: result.quiz.totalPoints,
-        createdBy: result.quiz.createdBy?.name || 'غير معروف'
-      },
-      score: {
-        percentage: result.score.percentage,
-        earnedPoints: result.score.earnedPoints,
-        totalPoints: result.score.totalPoints,
-        correctAnswers: result.score.correctAnswers,
-        totalQuestions: result.score.totalQuestions
-      },
-      grade: result.grade,
-      timeSpent: {
-        seconds: result.timeSpent,
-        display: `${Math.floor(result.timeSpent / 60)}:${(result.timeSpent % 60).toString().padStart(2, '0')}`
-      },
-      completedAt: result.completedAt,
-      // تحديد الأداء
-      performance: result.score.percentage >= 90 ? 'ممتاز' : 
-                  result.score.percentage >= 80 ? 'جيد جداً' :
-                  result.score.percentage >= 70 ? 'جيد' :
-                  result.score.percentage >= 60 ? 'مقبول' : 'يحتاج تحسين'
-    }));
+    const formattedResults = results.map(result => {
+      // إذا لم يوجد كويز (quiz=null) لأي سبب، تجنب الخطأ وأظهر بيانات افتراضية
+      const quiz = result.quiz || {};
+      return {
+        id: result._id,
+        quiz: {
+          title: quiz.title || 'غير متوفر',
+          subject: quiz.subject || 'غير متوفر',
+          grade: quiz.grade || 'غير متوفر',
+          totalQuestions: quiz.totalQuestions || 0,
+          totalPoints: quiz.totalPoints || 0,
+          createdBy: quiz.createdBy?.name || 'غير معروف'
+        },
+        score: {
+          percentage: result.score.percentage,
+          earnedPoints: result.score.earnedPoints,
+          totalPoints: result.score.totalPoints,
+          correctAnswers: result.score.correctAnswers,
+          totalQuestions: result.score.totalQuestions
+        },
+        grade: result.grade,
+        timeSpent: {
+          seconds: result.timeSpent,
+          display: `${Math.floor(result.timeSpent / 60)}:${(result.timeSpent % 60).toString().padStart(2, '0')}`
+        },
+        completedAt: result.completedAt,
+        // تحديد الأداء
+        performance: result.score.percentage >= 90 ? 'ممتاز' : 
+                    result.score.percentage >= 80 ? 'جيد جداً' :
+                    result.score.percentage >= 70 ? 'جيد' :
+                    result.score.percentage >= 60 ? 'مقبول' : 'يحتاج تحسين'
+      };
+    });
 
     res.status(200).json({
       success: true,

@@ -58,14 +58,16 @@ export const submitQuizHandler = async (req, res) => {
     // جلب بيانات المستخدم
     const user = await User.findById(userId).select('grade role name');
     
-    if (user.role !== 'student') {
+    // السماح للطالب أو المعلم أو الأدمن بحل الكويز
+    if (!['student', 'instructor', 'admin'].includes(user.role)) {
       return res.status(403).json({
         success: false,
-        message: "هذه الميزة متاحة للطلاب فقط"
+        message: "هذه الميزة متاحة للطلاب والمعلمين والإداريين فقط"
       });
     }
 
-    if (user.grade !== quiz.grade) {
+    // التحقق من الصف فقط للطلاب، أما المعلم والإدمن يمكنهم حل أي كويز
+    if (user.role === 'student' && user.grade !== quiz.grade) {
       return res.status(403).json({
         success: false,
         message: `هذا الكويز مخصص لـ ${quiz.grade} فقط`
@@ -115,21 +117,47 @@ export const submitQuizHandler = async (req, res) => {
     let totalEarnedPoints = 0;
     let correctAnswersCount = 0;
 
+    // دالة لتوحيد نوع الإجابة لأسئلة صح وخطأ
+   // دالة محسنة لتوحيد نوع الإجابة لأسئلة صح وخطأ
+function normalizeTF(val) {
+  if (val === true || val === 'صح' || val.toString().toLowerCase() === 'true') {
+    return 'صح';
+  }
+  if (val === false || val === 'خطأ' || val.toString().toLowerCase() === 'false') {
+    return 'خطأ';
+  }
+  // إذا كان boolean، حوله إلى النص المناسب
+  if (typeof val === 'boolean') {
+    return val ? 'صح' : 'خطأ';
+  }
+  // إذا كان string، حاول التعرف عليه
+  if (typeof val === 'string') {
+    const trimmed = val.trim().toLowerCase();
+    if (trimmed === 'صح' || trimmed === 'true' || trimmed === 'yes') {
+      return 'صح';
+    }
+    if (trimmed === 'خطأ' || trimmed === 'false' || trimmed === 'no') {
+      return 'خطأ';
+    }
+  }
+  return val; // إرجاع القيمة كما هي إذا لم تُتعرف
+}
+
     for (let i = 0; i < quiz.questions.length; i++) {
       const question = quiz.questions[i];
       const answerObject = answers[i];
-      
       // استخراج الإجابة من الكائن أو استخدامها مباشرةً
       const userAnswer = answerObject && typeof answerObject === 'object' && answerObject.answer 
         ? answerObject.answer 
         : answerObject;
-      
       let isCorrect = false;
       let pointsEarned = 0;
 
       if (question.type === 'صح وخطأ') {
-        // للأسئلة من نوع صح وخطأ
-        isCorrect = userAnswer === question.correctAnswer;
+        // توحيد نوع الإجابة (normalize) قبل المقارنة
+        const normalizedUserAnswer = normalizeTF(userAnswer);
+        const normalizedCorrectAnswer = normalizeTF(question.correctAnswer);
+        isCorrect = normalizedUserAnswer === normalizedCorrectAnswer;
       } else if (question.type === 'اختر من متعدد') {
         // للأسئلة من نوع اختر من متعدد
         const correctOption = question.options.find(opt => opt.isCorrect);
@@ -155,26 +183,20 @@ export const submitQuizHandler = async (req, res) => {
 
     // حساب التقدير بناء على النسبة المئوية
     let gradeInfo = {};
-    if (percentage >= 97) {
-      gradeInfo = { letter: 'A+', description: 'ممتاز+' };
-    } else if (percentage >= 93) {
+    if (percentage >= 95) {
+      gradeInfo = { letter: 'A+', description: 'ممتاز مرتفع' };
+    } else if (percentage >= 90) {
       gradeInfo = { letter: 'A', description: 'ممتاز' };
-    } else if (percentage >= 89) {
-      gradeInfo = { letter: 'A-', description: 'ممتاز-' };
-    } else if (percentage >= 84) {
-      gradeInfo = { letter: 'B+', description: 'جيد جداً+' };
+    } else if (percentage >= 85) {
+      gradeInfo = { letter: 'B+', description: 'جيد جداً مرتفع' };
     } else if (percentage >= 80) {
       gradeInfo = { letter: 'B', description: 'جيد جداً' };
-    } else if (percentage >= 76) {
-      gradeInfo = { letter: 'B-', description: 'جيد جداً-' };
-    } else if (percentage >= 73) {
-      gradeInfo = { letter: 'C+', description: 'جيد+' };
+    } else if (percentage >= 75) {
+      gradeInfo = { letter: 'C+', description: 'جيد مرتفع' };
     } else if (percentage >= 70) {
       gradeInfo = { letter: 'C', description: 'جيد' };
-    } else if (percentage >= 67) {
-      gradeInfo = { letter: 'C-', description: 'جيد-' };
-    } else if (percentage >= 64) {
-      gradeInfo = { letter: 'D+', description: 'مقبول+' };
+    } else if (percentage >= 65) {
+      gradeInfo = { letter: 'D+', description: 'مقبول مرتفع' };
     } else if (percentage >= 60) {
       gradeInfo = { letter: 'D', description: 'مقبول' };
     } else {
@@ -211,14 +233,14 @@ export const submitQuizHandler = async (req, res) => {
       let selectedAnswerText;
 
       if (question.type === 'صح وخطأ') {
-        correctAnswer = question.correctAnswer ? 'صح' : 'خطأ';
-        selectedAnswerText = userAnswer.selectedAnswer ? 'صح' : 'خطأ';
+        // إصلاح: استخدم دالة التوحيد لعرض الإجابة الصحيحة وإجابة المستخدم
+        correctAnswer = normalizeTF(question.correctAnswer);
+        selectedAnswerText = normalizeTF(userAnswer.selectedAnswer);
       } else if (question.type === 'اختر من متعدد') {
         const correctOption = question.options.find(opt => opt.isCorrect);
         const selectedOption = question.options.find(opt => opt._id.toString() === userAnswer.selectedAnswer);
-        
-        correctAnswer = correctOption.text;
-        selectedAnswerText = selectedOption ? selectedOption.text : 'لم يتم الاختيار';
+        correctAnswer = correctOption ? correctOption.text : 'غير محدد';
+        selectedAnswerText = selectedOption ? selectedOption.text : 'لم يتم الإجابة';
       }
 
       return {

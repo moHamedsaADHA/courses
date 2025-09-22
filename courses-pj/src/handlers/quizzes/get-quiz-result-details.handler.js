@@ -39,7 +39,15 @@ export const getQuizResultDetailsHandler = async (req, res) => {
 
     // التحقق من أن النتيجة تخص المستخدم الحالي أو أن المستخدم مدرس/أدمن
     const userRole = req.user.role;
-    if (result.student._id.toString() !== userId && userRole !== 'instructor' && userRole !== 'admin') {
+    // إذا لم يوجد student أو لم يوجد _id اعتبرها غير مصرح
+    if (!result.student || !result.student._id) {
+      return res.status(403).json({
+        success: false,
+        message: "غير مصرح لك بعرض هذه النتيجة"
+      });
+    }
+    // قارن userId وresult.student._id بعد تحويلهما إلى string
+    if (result.student._id.toString() !== userId.toString() && userRole !== 'instructor' && userRole !== 'admin') {
       return res.status(403).json({
         success: false,
         message: "غير مصرح لك بعرض هذه النتيجة"

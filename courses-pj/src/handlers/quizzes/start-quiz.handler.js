@@ -35,19 +35,19 @@ export const startQuizHandler = async (req, res) => {
       });
     }
 
-    // جلب بيانات المستخدم للتحقق من الصف
+    // جلب بيانات المستخدم للتحقق من الدور والصف
     const user = await User.findById(userId).select('grade role');
-    
-    // التحقق من أن المستخدم طالب
-    if (user.role !== 'student') {
+
+    // السماح للطالب أو المعلم أو الأدمن ببدء الكويز
+    if (!['student', 'instructor', 'admin'].includes(user.role)) {
       return res.status(403).json({
         success: false,
-        message: "هذه الميزة متاحة للطلاب فقط"
+        message: "هذه الميزة متاحة للطلاب والمعلمين والإداريين فقط"
       });
     }
 
-    // التحقق من أن الطالب في نفس صف الكويز
-    if (user.grade !== quiz.grade) {
+    // التحقق من الصف فقط للطلاب، أما المعلم والإدمن يمكنهم بدء أي كويز
+    if (user.role === 'student' && user.grade !== quiz.grade) {
       return res.status(403).json({
         success: false,
         message: `هذا الكويز مخصص لـ ${quiz.grade} فقط`
