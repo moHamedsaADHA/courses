@@ -9,14 +9,21 @@ function generateCode() {
   return 'S' + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
+
 async function main() {
   await mongoose.connect(DB_URL);
-  const codes = [];
-  for (let i = 0; i < 200; i++) {
-    codes.push({ code: generateCode(), role: 'student' });
+  // حذف جميع الأكواد القديمة
+  await Code.deleteMany({});
+  console.log('🗑️ تم حذف جميع الأكواد القديمة.');
+
+  // إنشاء 1500 كود جديد
+  const codes = new Set();
+  while (codes.size < 1500) {
+    codes.add(generateCode());
   }
-  await Code.insertMany(codes);
-  console.log('✅ تم إنشاء 200 كود طالب بنجاح!');
+  const codeDocs = Array.from(codes).map(code => ({ code, role: 'student' }));
+  await Code.insertMany(codeDocs);
+  console.log('✅ تم إنشاء 1500 كود طالب بنجاح!');
   await mongoose.disconnect();
 }
 
