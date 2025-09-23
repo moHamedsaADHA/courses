@@ -96,7 +96,7 @@ export const registerUserHandler = async (req, res, next) => {
         isVerified: false
       },
       environment.JWT_SECRET,
-      { expiresIn: "1h" } // توكن مؤقت لساعة واحدة
+      { expiresIn: "7d" } // توكن مؤقت صالح لمدة 7 أيام
     );
 
     const userObj = user.toObject ? user.toObject() : user;
