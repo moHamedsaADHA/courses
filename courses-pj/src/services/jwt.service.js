@@ -5,8 +5,8 @@ class JWTService {
   constructor() {
     this.accessTokenSecret = environment.JWT_SECRET;
     this.refreshTokenSecret = environment.JWT_REFRESH_SECRET || environment.JWT_SECRET + '_refresh';
-  this.accessTokenExpiry = '7d'; // Access token صالح لمدة أسبوع
-    this.refreshTokenExpiry = '7d'; // Refresh token طويل المدى
+    this.accessTokenExpiry = '30d'; // Access token صالح لمدة شهر
+    this.refreshTokenExpiry = '90d'; // Refresh token صالح لمدة 3 أشهر
   }
 
   /**

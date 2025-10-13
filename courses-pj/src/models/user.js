@@ -28,8 +28,9 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
+      sparse: true, // يسمح بقيم null متعددة
       lowercase: true,
       trim: true,
     },
@@ -57,9 +58,8 @@ const UserSchema = new mongoose.Schema(
     code: {
       type: String,
       trim: true,
-      required: function() {
-        return this.role === 'admin' || this.role === 'instructor';
-      }
+      required: true,
+      unique: true
     },
     isVerified: {
       type: Boolean,

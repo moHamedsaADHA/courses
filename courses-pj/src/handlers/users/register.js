@@ -9,12 +9,22 @@ export const registerUserHandler = async (req, res, next) => {
     // طباعة تشخيص خدمة البريد الإلكتروني
     emailService.printEmailDiagnostics();
     
-    // التحقق من وجود البريد الإلكتروني مسبقاً
-    const existingUser = await User.findOne({ email: req.body.email });
+    // التحقق من وجود الكود مسبقاً
+    const existingUser = await User.findOne({ code: req.body.code });
     if (existingUser) {
       return res.status(400).json({ 
-        message: "البريد الإلكتروني مستخدم مسبقاً" 
+        message: "الكود مستخدم مسبقاً" 
       });
+    }
+
+    // التحقق من البريد الإلكتروني إذا تم إرساله
+    if (req.body.email) {
+      const existingEmailUser = await User.findOne({ email: req.body.email });
+      if (existingEmailUser) {
+        return res.status(400).json({ 
+          message: "البريد الإلكتروني مستخدم مسبقاً" 
+        });
+      }
     }
 
     // إنشاء OTP ووقت انتهاء الصلاحية
@@ -45,16 +55,15 @@ export const registerUserHandler = async (req, res, next) => {
     const user = await User.create({
       name: req.body.name,
       password: req.body.password,
-    
-      email: req.body.email,
+      email: req.body.email || null,
       location: req.body.location,
       grade: req.body.grade,
       role: req.body.role || "student",
       phone: req.body.phone,
-      code: req.body.code || undefined,
+      code: usedCode.code, // استخدام الكود من الداتابيس
       otp: otp,
       otpExpires: otpExpires,
-      isVerified: false
+      isVerified: true // الحساب مفعل تلقائياً عند استخدام كود صحيح
     });
 
     // إذا كان هناك كود، حدثه ليصبح مستخدم واربطه بالمستخدم
@@ -72,62 +81,54 @@ export const registerUserHandler = async (req, res, next) => {
       console.warn(`⚠️ تفاصيل الخطأ: ${connectionStatus.error}`);
     }
 
-    // إرسال OTP عبر البريد الإلكتروني
+    // إرسال OTP عبر البريد الإلكتروني (إذا كان البريد متوفر)
+    // تم تخطي إرسال OTP لأن الحساب أصبح مفعل تلقائياً
     let emailSent = false;
     let emailError = null;
     
-    console.log("📤 محاولة إرسال OTP عبر البريد الإلكتروني...");
-    try {
-      const emailResult = await emailService.sendOTPEmail(user.email, user.name, otp);
-      emailSent = true;
-      console.log(`✅ تم إرسال OTP بنجاح! Message ID: ${emailResult.messageId}`);
-    } catch (error) {
-      emailError = error;
-      console.error('❌ فشل في إرسال OTP عبر البريد الإلكتروني:', error.message);
-      console.error('📋 تفاصيل الخطأ:', error.stack);
-      // استمرار العملية حتى لو فشل إرسال البريد
-    }
+    console.log("✅ تم تفعيل الحساب تلقائياً باستخدام الكود الصحيح، لا حاجة لإرسال OTP");
 
-    // إنشاء توكن مؤقت (سيتم تحديثه بعد التفعيل)
-    const tempToken = jwt.sign(
-      {
-        userId: user._id,
-        isTemporary: true,
-        isVerified: false
-      },
-      environment.JWT_SECRET,
-      { expiresIn: "7d" } // توكن مؤقت صالح لمدة 7 أيام
-    );
+    // إنشاء توكن نهائي (الحساب مفعل بالفعل)
+    const { jwtService } = await import('../../services/jwt.service.js');
+    
+    const tokens = jwtService.generateTokens({
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      grade: user.grade,
+      courseId: user.courseId,
+      isVerified: user.isVerified
+    });
 
     const userObj = user.toObject ? user.toObject() : user;
     delete userObj.password;
     delete userObj.otp; // لا نرسل OTP في الاستجابة
 
-    const message = emailSent 
-      ? "تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب"
-      : "تم إنشاء الحساب بنجاح. لكن فشل في إرسال رمز التحقق. يمكنك طلب إرسال رمز جديد.";
+    const message = "تم إنشاء الحساب وتفعيله بنجاح! يمكنك تسجيل الدخول الآن.";
 
     // طباعة ملخص العملية في التيرمينال
     console.log("📊 ملخص عملية التسجيل:");
-    console.log(`👤 المستخدم: ${user.name} (${user.email})`);
-    console.log(`📧 حالة الإيميل: ${emailSent ? '✅ تم الإرسال' : '❌ فشل الإرسال'}`);
-    console.log(`🔑 OTP: ${otp}`);
-    console.log(`⏳ صالح حتى: ${otpExpires.toLocaleString('ar-EG')}`);
-    if (emailError) {
-      console.log(`❗ سبب فشل الإيميل: ${emailError.message}`);
-    }
+    console.log(`👤 المستخدم: ${user.name} (${user.email || 'بدون بريد إلكتروني'})`);
+    console.log(`🔑 الكود: ${user.code}`);
+    console.log(`✅ حالة التفعيل: مفعل تلقائياً`);
     console.log("=".repeat(50));
 
     res.status(201).json({ 
+      success: true,
       message,
       user: userObj, 
-      tempToken,
-      requiresVerification: true,
-      emailSent,
-      emailError: emailError ? emailError.message : null,
-      // في بيئة التطوير، أرسل OTP دائماً للاختبار
-      otp: process.env.NODE_ENV === 'development' ? otp : (!emailSent ? otp : undefined),
-      otpExpires: otpExpires.toISOString()
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        expiresIn: tokens.expiresIn,
+        tokenType: tokens.tokenType
+      },
+      // للتوافق مع الكود القديم
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      token: tokens.accessToken,
+      requiresVerification: false,
+      isVerified: true
     });
 
   } catch (error) {

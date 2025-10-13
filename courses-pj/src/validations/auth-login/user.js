@@ -1,9 +1,10 @@
 import { body } from "express-validator";
 
 export const validateUserLogin = [
-  body("email")
-    .notEmpty().withMessage("البريد الإلكتروني مطلوب")
-    .isEmail().withMessage("صيغة البريد الإلكتروني غير صحيحة"),
+  body("code")
+    .notEmpty().withMessage("الكود مطلوب")
+    .isString().withMessage("الكود يجب أن يكون نص")
+    .isLength({ min: 8, max: 20 }).withMessage("الكود يجب أن يكون بين 8 و 20 حرف"),
 
   body("password")
     .notEmpty().withMessage("كلمة المرور مطلوبة")

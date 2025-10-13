@@ -18,16 +18,32 @@ export const registerUserValidation = [
     }),
 
   body("email")
-    .notEmpty().withMessage("البريد الإلكتروني مطلوب")
-    .isEmail().withMessage("صيغة البريد الإلكتروني غير صحيحة")
+    .optional({ nullable: true, checkFalsy: true })  // اختياري بالكامل حتى للقيم الفارغة
     .custom(async (value) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        throw new Error("صيغة البريد الإلكتروني غير صحيحة");
+      // فقط تحقق إذا كان هناك قيمة حقيقية وليست فارغة
+      if (value && typeof value === 'string' && value.trim() !== '') {
+        // تحقق من صيغة البريد الإلكتروني
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value.trim())) {
+          throw new Error("صيغة البريد الإلكتروني غير صحيحة");
+        }
+        // تحقق من عدم وجود البريد مسبقاً
+        const existingEmail = await User.findOne({ email: value.trim() });
+        if (existingEmail) {
+          throw new Error("البريد الإلكتروني مستخدم مسبقاً");
+        }
       }
-      const existingEmail = await User.findOne({ email: value });
-      if (existingEmail) {
-        throw new Error("البريد الإلكتروني مستخدم مسبقاً");
+      return true;
+    }),
+
+  body("code")
+    .notEmpty().withMessage("الكود مطلوب")
+    .isString().withMessage("الكود يجب أن يكون نص")
+    .isLength({ min: 8, max: 20 }).withMessage("الكود يجب أن يكون بين 8 و 20 حرف")
+    .custom(async (value) => {
+      const existingUser = await User.findOne({ code: value });
+      if (existingUser) {
+        throw new Error("الكود مستخدم مسبقاً");
       }
       return true;
     }),
