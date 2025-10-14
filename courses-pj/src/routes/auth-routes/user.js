@@ -24,6 +24,10 @@ import {
   refreshTokenHandler,
   logoutHandler,
 } from "../../handlers/users/refresh-token.js";
+import { getAllUsersHandler } from "../../handlers/users/get-all-users.handler.js";
+import { isAuthenticated } from "../../middlewares/isAuthenticated.middleware.js";
+import { isAuthorized } from "../../middlewares/isAuthorized.middleware.js";
+
 export const userRouter = express.Router();
 
 import { validationResult as expressValidationResult } from "express-validator";
@@ -66,3 +70,11 @@ userRouter.post("/resend-otp", validateResendOTP, resendOTPHandler);
 // Refresh Token Routes
 userRouter.post("/refresh-token", refreshTokenHandler);
 userRouter.post("/logout", logoutHandler);
+
+// Get All Users Route - للإداريين فقط
+userRouter.get(
+  "/all", 
+  isAuthenticated, 
+  isAuthorized(['admin']), 
+  getAllUsersHandler
+);

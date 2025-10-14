@@ -90,8 +90,13 @@ UserSchema.index({ role: 1, grade: 1 }); // فهرس مركب للدور وال�
 UserSchema.index({ createdAt: -1 }); // فهرس للتاريخ
 
 UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+  // تعطيل تشفير كلمة المرور بناءً على طلب العميل
+  // العميل طلب تخزين كلمات المرور بدون تشفير لأغراض خاصة بالمشروع
+  // ملاحظة: هذا غير آمن في البيئات الإنتاجية العادية
+  
+  // if (!this.isModified("password")) return next();
+  // this.password = await bcrypt.hash(this.password, 10);
+  
   next();
 });
 

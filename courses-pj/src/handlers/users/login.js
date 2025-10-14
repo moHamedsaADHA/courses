@@ -26,7 +26,9 @@ export const loginUserHandler = async (req, res) => {
     }
 
     // التحقق من كلمة المرور
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    // تم تعطيل bcrypt بناءً على طلب العميل - مقارنة مباشرة
+    // const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = password === user.password; // مقارنة مباشرة بدون تشفير
 
     if (!isPasswordCorrect) {
       return res.status(401).json({ 
