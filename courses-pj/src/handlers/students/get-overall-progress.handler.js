@@ -5,7 +5,7 @@ import { User } from '../../models/user.js';
 export const getOverallProgressHandler = async (req, res) => {
   try {
     const userId = req.user._id || req.user.userId;
-    const user = await User.findById(userId).select('name grade role');
+    const user = await User.findById(userId).select('name grade role code');
 
     // جلب نتائج الكويزات
     const quizResults = await QuizResult.find({ student: userId }).lean();
@@ -30,7 +30,12 @@ export const getOverallProgressHandler = async (req, res) => {
       success: true,
       message: 'تم جلب المستوى العام للطالب بنجاح',
       data: {
-        user: { name: user.name, grade: user.grade, role: user.role },
+        user: { 
+          name: user.name, 
+          grade: user.grade, 
+          role: user.role,
+          code: user.code
+        },
         overallPercentage,
         totalActivities: allPercentages.length,
         passed,
