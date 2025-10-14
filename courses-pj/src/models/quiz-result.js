@@ -162,4 +162,12 @@ quizResultSchema.statics.getStudentStats = async function(studentId) {
   };
 };
 
+// إضافة فهارس لتحسين الأداء
+quizResultSchema.index({ student: 1 }); // فهرس للطالب
+quizResultSchema.index({ quiz: 1 }); // فهرس للكويز
+quizResultSchema.index({ student: 1, quiz: 1 }, { unique: true }); // فهرس مركب فريد
+quizResultSchema.index({ student: 1, createdAt: -1 }); // فهرس للطالب والتاريخ
+quizResultSchema.index({ 'score.percentage': -1 }); // فهرس للدرجة
+quizResultSchema.index({ createdAt: -1 }); // فهرس للتاريخ
+
 export const QuizResult = mongoose.model('QuizResult', quizResultSchema);

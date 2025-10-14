@@ -80,6 +80,15 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
+// إضافة فهارس لتحسين الأداء
+UserSchema.index({ email: 1 }, { sparse: true }); // فهرس للبريد الإلكتروني (sparse للقيم الفارغة)
+UserSchema.index({ code: 1 }, { unique: true }); // فهرس فريد للكود
+UserSchema.index({ role: 1 }); // فهرس للدور
+UserSchema.index({ grade: 1 }); // فهرس للصف
+UserSchema.index({ isVerified: 1 }); // فهرس لحالة التفعيل
+UserSchema.index({ role: 1, grade: 1 }); // فهرس مركب للدور والصف
+UserSchema.index({ createdAt: -1 }); // فهرس للتاريخ
+
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);

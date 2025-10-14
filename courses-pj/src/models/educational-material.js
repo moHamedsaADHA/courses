@@ -25,4 +25,9 @@ const educationalMaterialSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+// إضافة فهارس لتحسين الأداء
+educationalMaterialSchema.index({ grade: 1 }); // فهرس للصف
+educationalMaterialSchema.index({ createdAt: -1 }); // فهرس للتاريخ (الأحدث أولاً)
+educationalMaterialSchema.index({ grade: 1, createdAt: -1 }); // فهرس مركب للصف والتاريخ
+
 export const EducationalMaterial = mongoose.model('EducationalMaterial', educationalMaterialSchema);

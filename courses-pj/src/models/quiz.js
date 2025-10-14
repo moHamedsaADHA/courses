@@ -192,4 +192,13 @@ quizSchema.methods.calculateScore = function(answers) {
   };
 };
 
+// إضافة فهارس لتحسين الأداء
+quizSchema.index({ grade: 1 }); // فهرس للصف
+quizSchema.index({ subject: 1 }); // فهرس للمادة
+quizSchema.index({ createdBy: 1 }); // فهرس للمنشئ
+quizSchema.index({ createdAt: -1 }); // فهرس للتاريخ
+quizSchema.index({ grade: 1, subject: 1 }); // فهرس مركب للصف والمادة
+quizSchema.index({ grade: 1, createdAt: -1 }); // فهرس مركب للصف والتاريخ
+quizSchema.index({ isPublished: 1, grade: 1 }); // فهرس للحالة والصف
+
 export const Quiz = mongoose.model('Quiz', quizSchema);

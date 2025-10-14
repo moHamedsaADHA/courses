@@ -48,6 +48,12 @@ const taskResultSchema = new mongoose.Schema({
   userAgent: { type: String }
 });
 
-taskResultSchema.index({ student: 1, task: 1 }, { unique: true });
+// إضافة فهارس لتحسين الأداء
+taskResultSchema.index({ student: 1, task: 1 }, { unique: true }); // فهرس مركب فريد
+taskResultSchema.index({ student: 1 }); // فهرس للطالب
+taskResultSchema.index({ task: 1 }); // فهرس للمهمة
+taskResultSchema.index({ student: 1, completedAt: -1 }); // فهرس للطالب والتاريخ
+taskResultSchema.index({ 'score.percentage': -1 }); // فهرس للدرجة
+taskResultSchema.index({ completedAt: -1 }); // فهرس للتاريخ
 
 export const TaskResult = mongoose.model('TaskResult', taskResultSchema);
