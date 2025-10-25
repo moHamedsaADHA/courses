@@ -50,8 +50,7 @@ export const registerUserValidation = [
 
   body("password")
     .notEmpty().withMessage("كلمة المرور مطلوبة")
-    .isLength({ min: 8 }).withMessage("كلمة المرور يجب أن تكون 8 أحرف على الأقل")
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage("كلمة المرور يجب أن تحتوي على حرف صغير وكبير ورقم"),
+    .isLength({ min: 8 }).withMessage("كلمة المرور يجب أن تكون 8 أحرف أو أرقام على الأقل"),
 
   body("location")
     .notEmpty().withMessage("المكان مطلوب")

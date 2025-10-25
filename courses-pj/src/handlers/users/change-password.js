@@ -13,10 +13,10 @@ export const changePasswordHandler = async (req, res, next) => {
 		}
 
 		// التحقق من طول كلمة المرور الجديدة
-		if (newPassword.length < 6) {
+		if (newPassword.length < 8) {
 			return res.status(400).json({ 
 				success: false, 
-				message: "كلمة المرور الجديدة يجب أن تكون أطول من 6 أحرف" 
+				message: "كلمة المرور الجديدة يجب أن تكون 8 أحرف أو أرقام على الأقل" 
 			});
 		}
 
