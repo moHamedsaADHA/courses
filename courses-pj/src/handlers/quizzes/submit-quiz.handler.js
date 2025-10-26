@@ -66,7 +66,7 @@ export const submitQuizHandler = async (req, res) => {
       });
     }
 
-    // التحقق من الصف فقط للطلاب، أما المعلم والإدمن يمكنهم حل أي كويز
+    // التحقق من الصف فقط للطلاب، أما المعلم والأدمن يمكنهم حل أي كويز
     if (user.role === 'student' && user.grade !== quiz.grade) {
       return res.status(403).json({
         success: false,

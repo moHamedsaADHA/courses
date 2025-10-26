@@ -26,7 +26,7 @@ export const submitTaskHandler = async (req, res) => {
     if (!['student', 'instructor', 'admin'].includes(user.role)) {
       return res.status(403).json({ success: false, message: 'هذه الميزة متاحة للطلاب والمعلمين والإداريين فقط' });
     }
-    // التحقق من الصف فقط للطلاب، أما المعلم والإدمن يمكنهم تسليم أي مهمة
+    // التحقق من الصف فقط للطلاب، أما المعلم والأدمن يمكنهم تسليم أي مهمة
     if (user.role === 'student' && user.grade !== task.grade) {
       return res.status(403).json({ success: false, message: `هذه المهمة مخصصة لـ ${task.grade} فقط` });
     }

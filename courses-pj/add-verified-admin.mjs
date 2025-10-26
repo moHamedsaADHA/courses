@@ -9,7 +9,7 @@ import { User } from './src/models/user.js';
 import { Code } from './src/models/code.js';
 
 // الاتصال بقاعدة البيانات
-const DB_CONNECTION = process.env.DB_URL || 'mongodb+srv://mohamedahmed342005_db_user:fnT4gxiObL6lgYVe@cluster0.ughy3xc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const DB_CONNECTION = process.env.DB_URL 
 
 async function addVerifiedAdminAccount() {
     try {
@@ -17,22 +17,22 @@ async function addVerifiedAdminAccount() {
         await mongoose.connect(DB_CONNECTION);
         console.log('✅ تم الاتصال بقاعدة البيانات بنجاح');
 
-        // التحقق من وجود حسابات إدمن
-        console.log('🔍 التحقق من حسابات الإدمن الموجودة...');
+        // التحقق من وجود حسابات أدمن
+        console.log('🔍 التحقق من حسابات الأدمن الموجودة...');
         const existingAdmins = await User.find({ role: 'admin' });
-        console.log(`📊 عدد حسابات الإدمن الموجودة: ${existingAdmins.length}`);
+        console.log(`📊 عدد حسابات الأدمن الموجودة: ${existingAdmins.length}`);
 
         if (existingAdmins.length > 0) {
-            console.log('📋 حسابات الإدمن الموجودة:');
+            console.log('📋 حسابات الأدمن الموجودة:');
             existingAdmins.forEach((admin, index) => {
                 console.log(`${index + 1}. ${admin.name} - كود: ${admin.code} - مُفعّل: ${admin.isVerified ? 'نعم' : 'لا'}`);
             });
         }
 
-        // إنشاء حساب إدمن جديد محقق
-        console.log('\n👤 إنشاء حساب إدمن جديد محقق...');
+        // إنشاء حساب أدمن جديد محقق
+        console.log('\n👤 إنشاء حساب أدمن جديد محقق...');
         
-        // توليد كود إدمن فريد
+        // توليد كود أدمن فريد
         const adminCode = 'VERIFIED' + Math.random().toString(36).substring(2, 8).toUpperCase();
         const adminPassword = 'admin' + Math.random().toString(36).substring(2, 8);
         
@@ -44,7 +44,7 @@ async function addVerifiedAdminAccount() {
         }
 
         const verifiedAdmin = new User({
-            name: 'إدمن محقق للمنصة',
+            name: 'أدمن محقق للمنصة',
             email: `verified.admin@platform.com`,
             code: adminCode,
             password: adminPassword, // سيتم تخزينها بدون تشفير
@@ -55,10 +55,10 @@ async function addVerifiedAdminAccount() {
         });
 
         await verifiedAdmin.save();
-        console.log('✅ تم إنشاء حساب الإدمن المحقق');
+        console.log('✅ تم إنشاء حساب الأدمن المحقق');
 
-        // إضافة كود الإدمن إلى جدول الأكواد
-        console.log('🔢 إضافة كود الإدمن إلى قاعدة الأكواد...');
+        // إضافة كود الأدمن إلى جدول الأكواد
+        console.log('🔢 إضافة كود الأدمن إلى قاعدة الأكواد...');
         const adminCodeDoc = new Code({
             code: adminCode,
             role: 'admin',
@@ -67,7 +67,7 @@ async function addVerifiedAdminAccount() {
         });
 
         await adminCodeDoc.save();
-        console.log('✅ تم إضافة كود الإدمن إلى قاعدة الأكواد');
+        console.log('✅ تم إضافة كود الأدمن إلى قاعدة الأكواد');
 
         // إحصائيات نهائية
         console.log('\n📊 الإحصائيات النهائية...');
@@ -76,8 +76,8 @@ async function addVerifiedAdminAccount() {
         const totalCodes = await Code.countDocuments();
         const adminCodes = await Code.countDocuments({ role: 'admin' });
 
-        console.log('\n🎉 تم إنشاء حساب الإدمن المحقق بنجاح!');
-        console.log('\n📋 بيانات الإدمن الجديد:');
+        console.log('\n🎉 تم إنشاء حساب الأدمن المحقق بنجاح!');
+        console.log('\n📋 بيانات الأدمن الجديد:');
         console.log(`👤 الاسم: ${verifiedAdmin.name}`);
         console.log(`🔑 الكود: ${adminCode}`);
         console.log(`🔐 كلمة المرور: ${adminPassword}`);
@@ -87,10 +87,10 @@ async function addVerifiedAdminAccount() {
         console.log(`📍 الموقع: ${verifiedAdmin.location}`);
 
         console.log('\n📊 إحصائيات النظام:');
-        console.log(`👥 إجمالي حسابات الإدمن: ${totalAdmins}`);
-        console.log(`✅ حسابات الإدمن المحققة: ${verifiedAdmins}`);
+        console.log(`👥 إجمالي حسابات الأدمن: ${totalAdmins}`);
+        console.log(`✅ حسابات الأدمن المحققة: ${verifiedAdmins}`);
         console.log(`🔢 إجمالي الأكواد: ${totalCodes}`);
-        console.log(`👑 أكواد الإدمن: ${adminCodes}`);
+        console.log(`👑 أكواد الأدمن: ${adminCodes}`);
 
         return {
             adminData: {
@@ -110,7 +110,7 @@ async function addVerifiedAdminAccount() {
         };
 
     } catch (error) {
-        console.error('❌ خطأ في إنشاء حساب الإدمن المحقق:', error);
+        console.error('❌ خطأ في إنشاء حساب الأدمن المحقق:', error);
         throw error;
     } finally {
         await mongoose.connection.close();
@@ -122,7 +122,7 @@ async function addVerifiedAdminAccount() {
 addVerifiedAdminAccount()
     .then((result) => {
         console.log('\n✅ تمت العملية بنجاح');
-        console.log('📱 يمكن للإدمن الجديد تسجيل الدخول مباشرة');
+        console.log('📱 يمكن للأدمن الجديد تسجيل الدخول مباشرة');
         console.log(`🔑 الكود: ${result.adminData.code}`);
         console.log(`🔐 كلمة المرور: ${result.adminData.password}`);
         process.exit(0);
