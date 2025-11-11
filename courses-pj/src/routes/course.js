@@ -8,8 +8,12 @@ import { deleteCourseHandler } from "../handlers/courses.handler/delete-course.h
 import { getCourses } from "../handlers/courses.handler/git-courses.handler.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.middleware.js";
 import { isAuthorized } from "../middlewares/isAuthorized.middleware.js";
+import { ensureDBConnection } from "../middlewares/ensureDBConnection.middleware.js";
 
 export const coursesRouter = express.Router();
+
+// تطبيق middleware للتأكد من الاتصال بقاعدة البيانات على جميع routes
+coursesRouter.use(ensureDBConnection);
 
 coursesRouter.get("/", getAllCourses);
 

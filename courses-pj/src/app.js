@@ -57,8 +57,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Connect to DB on cold start (serverless-safe)
-connectDB();
+// الاتصال بقاعدة البيانات
+// في التطوير المحلي: يتصل مباشرة
+// في Vercel: يتصل من خلال api/index.js
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  console.log('🔗 Connecting to database (local/development mode)...');
+  connectDB();
+}
 
 app.use("/api/courses", coursesRouter); 
 app.use("/api/categories", categoryRouter); 
