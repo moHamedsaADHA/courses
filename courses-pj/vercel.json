@@ -13,4 +13,23 @@
       "maxDuration": 30
     }
   }
+}{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 30
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/ping", "dest": "/api/ping.js" },
+    { "src": "/(.*)", "dest": "/api/index.js" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
+
