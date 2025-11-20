@@ -6,23 +6,16 @@ import { environment } from "./config/server.config.js";
 const app = express();
 
 // إعدادات CORS البسيطة
+// استخدم "origin: true" ليتم عكس Origin الحقيقي في الهيدر
 const corsOptions = {
-  origin: '*', // السماح لجميع Origins مؤقتاً للاختبار
+  origin: true, // عكس origin المرسل من المتصفح (يُسمح لجميع المصادر عملياً)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   credentials: true
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
-// معالجة OPTIONS requests بشكل صريح
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.sendStatus(200);
-});
 
 // اتصال بقاعدة البيانات
 connectDB();
